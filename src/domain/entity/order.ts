@@ -36,4 +36,15 @@ export default class Order {
         return this._items.reduce((acc, item) => acc + item.price, 0);
     }
 
+    get id(): string {
+        return this._id
+    }
+
+    get customerId(): string {
+        return this._customerId;
+    }
+
+    get items(): OrderItem[] {
+        return this._items;
+    }
 }

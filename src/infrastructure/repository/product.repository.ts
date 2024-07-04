@@ -4,16 +4,42 @@ import ProductModel from "../db/sequelize/model/product.model";
 
 export default class ProductRepository implements ProductRepositoryInterface {
     async create(entity: Product): Promise<void> {
-        await ProductModel.create({});
+        await ProductModel.create({
+            id: entity.id,
+            name: entity.name,
+            price: entity.price
+        });
     }
     async update(entity: Product): Promise<void> {
-        throw new Error("Method not implemented");        
+        await ProductModel.update(
+            {
+                name: entity.name,
+                price: entity.price,
+            },
+            {
+                where: {
+                    id: entity.id,
+                }
+            }
+        );
     }
-    async find(id: string): Promise<Product> {
-        throw new Error("Method not implemented");        
+    async find(id: string): Promise<Product | null> {
+        const productFind = await ProductModel.findOne({
+            where: { id }
+        });
+        if (productFind) {
+            return new Product(
+                productFind.id,
+                productFind.name,
+                productFind.price
+            );
+        }
+        return null;
     }
     async findAll(): Promise<Product[]> {
-        throw new Error("Method not implemented");        
+        const productModels = ProductModel.findAll();
+        return (await productModels).map((productModel) => 
+            new Product(productModel.id, productModel.name, productModel.price));     
     }
     
 }
